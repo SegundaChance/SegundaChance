@@ -4,9 +4,8 @@
 #header {
   min-height: 10vh;
   background: var(--verde-primario);
-  clip-path: path(
-    "M0 107.666C0 107.666 292.723 126.566 480 117.574C573.935 113.063 625.977 99.6848 720 97.7588C813.786 95.8377 865.949 107.666 960 107.666C1054.05 107.666 1106.21 95.8377 1200 97.7588C1294.02 99.6848 1346.06 113.063 1440 117.574C1627.28 126.566 1920 107.666 1920 107.666V-6.67572e-06H0V107.666Z"
-  );
+  clip-path: path("M0 107.666C0 107.666 292.723 126.566 480 117.574C573.935 113.063 625.977 99.6848 720 97.7588C813.786 95.8377 865.949 107.666 960 107.666C1054.05 107.666 1106.21 95.8377 1200 97.7588C1294.02 99.6848 1346.06 113.063 1440 117.574C1627.28 126.566 1920 107.666 1920 107.666V-6.67572e-06H0V107.666Z"
+    );
 }
 
 #header::after {
@@ -24,7 +23,7 @@
 }
 
 #img {
-  width: 14rem;
+  width: 19rem;
 }
 
 #img_usuario {
@@ -39,11 +38,9 @@
   height: 60px;
   padding: var(--padding-sm);
   color: var(--branco);
-  background: color-mix(
-    in srgb,
-    var(--verde-primario),
-    var(--verde-secundario)
-  );
+  background: color-mix(in srgb,
+      var(--verde-primario),
+      var(--verde-secundario));
   border: 1px solid var(--destaque);
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-sm);
@@ -158,6 +155,7 @@
   from {
     opacity: 0;
   }
+
   to {
     opacity: 1;
   }
@@ -167,6 +165,7 @@
   from {
     opacity: 1;
   }
+
   to {
     opacity: 0;
   }
@@ -176,6 +175,7 @@
   from {
     transform: translateX(100%);
   }
+
   to {
     transform: translateX(0);
   }
@@ -185,6 +185,7 @@
   from {
     transform: translateX(0);
   }
+
   to {
     transform: translateX(100%);
   }
@@ -193,11 +194,12 @@
 /*? ================= */
 /*?   Media Queries   */
 /*? ================= */
-@media (max-width: 1080px) {
+@media (max-width: 1380px) {
   #header {
     width: 100%;
     background: var(--verde-primario);
     clip-path: none;
+    min-height: 12vh;
   }
 
   #header::after {
@@ -223,11 +225,9 @@
     top: 0;
     z-index: 1000;
     width: 100%;
-    background: linear-gradient(
-      to bottom,
-      color-mix(in srgb, var(--bg), var(--destaque) 75%),
-      transparent
-    );
+    background: linear-gradient(to bottom,
+        color-mix(in srgb, var(--bg), var(--destaque) 75%),
+        transparent);
     clip-path: none;
   }
 
@@ -242,11 +242,9 @@
     top: 0;
     z-index: 1000;
     width: 100%;
-    background: linear-gradient(
-      to bottom,
-      color-mix(in srgb, var(--bg), var(--destaque) 75%),
-      transparent
-    );
+    background: linear-gradient(to bottom,
+        color-mix(in srgb, var(--bg), var(--destaque) 75%),
+        transparent);
     clip-path: none;
   }
 
