@@ -1,12 +1,12 @@
 import Link from "next/link";
+import Lucide from "@/utils/lucide";
+import Button from "../button/button";
 import styles from "./header.module.css";
 import { useRouter } from "next/router";
-import { TrocaTema } from "@/utils/trocaTema";
-import { useEffect, useState } from "react";
-import { logout, obterUsuarioAutenticado } from "@/pages/api/authService";
-import Button from "../button/button";
 import { createPortal } from "react-dom";
-import Lucide from "@/utils/lucide";
+import { useEffect, useState } from "react";
+import { TrocaTema } from "@/utils/trocaTema";
+import { logout, obterUsuarioAutenticado } from "@/pages/api/authService";
 
 interface Token {
   id: string;
@@ -143,7 +143,7 @@ const Header = () => {
             <img
               className="img"
               id={styles.img}
-              src="/imgs/Logo.svg"
+              src="/svg/Logo.svg"
               alt="Logo do site"
             />
           </Link>

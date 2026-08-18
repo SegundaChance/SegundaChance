@@ -1,10 +1,10 @@
-import { useEffect, useState, useRef } from "react";
+import Lucide from "@/utils/lucide";
 import styles from "./lista.module.css";
 import Card from "@/components/cards/cards";
-import Lucide from "@/utils/lucide";
+import { useEffect, useState, useRef } from "react";
+import { desformatarPreco } from "@/utils/formatacao";
 import { erro, notificacao, toastConfirmarExcluir } from "@/utils/toast";
 import { deletarProduto, listarProduto } from "@/pages/api/genericService";
-import { desformatarPreco } from "@/utils/formatacao";
 
 interface Produto {
   produtoID: number;

@@ -14,7 +14,7 @@ const Footer = () => {
             <img
               className="img"
               id={styles.img}
-              src="/imgs/LogoBranca.svg"
+              src="/svg/LogoBranca.svg"
               alt="Logo do site"
             />
           </Link>
@@ -29,7 +29,7 @@ const Footer = () => {
           >
             <img
               className={styles.social_icon}
-              src="/imgs/Instagram.svg"
+              src="/svg/Instagram.svg"
               alt="Instagram da ReHope"
             />
           </Link>
@@ -41,7 +41,7 @@ const Footer = () => {
           >
             <img
               className={styles.social_icon}
-              src="/imgs/Facebook.svg"
+              src="/svg/Facebook.svg"
               alt="Facebook da ReHope"
             />
           </Link>

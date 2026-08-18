@@ -20,9 +20,9 @@ const Login = () => {
   const [ativo, setAtivo] = useState<boolean>(false);
 
   const imagens = [
-    "/imgs/ImagemDoLogin.png",
-    "/imgs/ImagemDoLogin2.png",
-    "/imgs/ImagemDoLogin3.png",
+    "/img/ImagemDoLogin.png",
+    "/img/ImagemDoLogin2.png",
+    "/img/ImagemDoLogin3.png",
   ];
 
   const [imagemAtual, setImagemAtual] = useState(0);
@@ -129,7 +129,7 @@ const Login = () => {
           <img
             className="img"
             id={styles.img}
-            src="/imgs/LogoBranca.svg"
+            src="/svg/LogoBranca.svg"
             alt="Logo do site"
           />
           <h1 className="h1" id={styles.h1}>

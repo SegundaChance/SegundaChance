@@ -1,7 +1,7 @@
 import Link from "next/link";
+import Lucide from "@/utils/lucide";
 import styles from "./cards.module.css";
 import Button from "@/components/button/button";
-import Lucide from "@/utils/lucide";
 import { formatarPreco } from "@/utils/formatacao";
 
 type CardProps = {
@@ -30,7 +30,7 @@ const Card = ({
         ? imagem.startsWith("data:")
           ? imagem
           : `data:image/jpeg;base64,${imagem}`
-        : "/imgs/CardFantasma.png",
+        : "/img/CardFantasma.png",
 
     imagemAlt: fantasma ? "Produto fantasma" : nomeProduto,
     titulo: fantasma ? "Preço" : formatarPreco(Number(preco || 0)),

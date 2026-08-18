@@ -93,7 +93,7 @@ const Detalhe = () => {
       ? produto.imagem.startsWith("data:")
         ? produto.imagem
         : `data:image/jpeg;base64,${produto.imagem}`
-      : "/imgs/CardFantasma.png";
+      : "/img/CardFantasma.png";
 
   return (
     <>
