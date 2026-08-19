@@ -3,23 +3,11 @@ import Footer from "@/components/footer/footer";
 import Header from "@/components/header/header";
 import Link from "next/link";
 import Lucide from "@/utils/lucide";
-import { useState } from "react";
-import { erro, notificacao } from "@/utils/toast";
-import { cadastrarLocalizacao } from "../api/genericService";
+import { useLocalizacao } from "../hooks/useLocalizacao";
 
-const CadastroLocalizacao = () => {
-  const [localizacao, setLocalizacao] = useState<string>("");
-  async function handleCadastro(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    try {
-      await cadastrarLocalizacao({ nomeLocalizacao: localizacao });
-
-      notificacao("Cadastro realizado com sucesso!");
-      setLocalizacao("");
-    } catch (error: any) {
-      erro(error.message);
-    }
-  }
+export default function CadastroLocalizacao() {
+  const { localizacao, setLocalizacao, carregando, handleCadastro } =
+    useLocalizacao();
 
   return (
     <>
@@ -57,6 +45,7 @@ const CadastroLocalizacao = () => {
             strokeLinecap="round"
           />
         </svg>
+
         <section className="container column">
           <form className="form info2" onSubmit={handleCadastro}>
             <h1>Criar Localização</h1>
@@ -70,6 +59,7 @@ const CadastroLocalizacao = () => {
                 className="input"
                 value={localizacao}
                 onChange={(e) => setLocalizacao(e.target.value)}
+                disabled={carregando}
                 required
               />
               <label htmlFor="nomeLocalizacao" className="label">
@@ -82,7 +72,9 @@ const CadastroLocalizacao = () => {
                 Voltar
               </Link>
 
-              <Button type="submit" children="Salvar" />
+              <Button type="submit" disabled={carregando}>
+                {carregando ? "Salvando..." : "Salvar"}
+              </Button>
             </div>
           </form>
         </section>
@@ -91,6 +83,4 @@ const CadastroLocalizacao = () => {
       <Footer />
     </>
   );
-};
-
-export default CadastroLocalizacao;
+}

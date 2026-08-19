@@ -1,34 +1,23 @@
-import { useState } from "react";
 import Button from "@/components/button/button";
 import Footer from "@/components/footer/footer";
 import Header from "@/components/header/header";
 import Link from "next/link";
 import Lucide from "@/utils/lucide";
-import { erro, notificacao } from "@/utils/toast";
-import { cadastrarUsuario } from "../api/genericService";
+import { useUsuario } from "../hooks/useUsuario";
 
-const CadastroUsuario = () => {
-  const [nome, setNome] = useState<string>("");
-  const [email, setEmail] = useState<string>("");
-  const [senha, setSenha] = useState<string>("");
-  const [telefone, setTelefone] = useState<string>("");
-
-  async function salvarUsuario(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    try {
-      const dados = {
-        nome,
-        email,
-        senha,
-        telefone,
-      };
-
-      await cadastrarUsuario(dados);
-      notificacao("Usuário cadastrado!");
-    } catch (error: any) {
-      erro("Erro ao cadastrar!");
-    }
-  }
+export default function CadastrarInstituicao() {
+  const {
+    nome,
+    setNome,
+    email,
+    setEmail,
+    senha,
+    setSenha,
+    telefone,
+    setTelefone,
+    carregando,
+    salvarUsuario,
+  } = useUsuario();
 
   return (
     <>
@@ -65,8 +54,8 @@ const CadastroUsuario = () => {
             strokeLinecap="round"
           />
         </svg>
+
         <section className="container column">
-          {/* Adicionado o onSubmit aqui */}
           <form className="form info2" onSubmit={salvarUsuario}>
             <h1>Cadastrar Usuário</h1>
 
@@ -79,6 +68,7 @@ const CadastroUsuario = () => {
                 className="input"
                 value={nome}
                 onChange={(e) => setNome(e.target.value)}
+                disabled={carregando}
                 required
               />
               <label htmlFor="nome" className="label">
@@ -95,6 +85,7 @@ const CadastroUsuario = () => {
                 className="input"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+                disabled={carregando}
                 required
               />
               <label htmlFor="email" className="label">
@@ -105,12 +96,13 @@ const CadastroUsuario = () => {
             <div className="campo_form max_width">
               <Lucide name="Lock" className="lucide" />
               <input
-                type="text"
+                type="password"
                 id="senha"
                 placeholder=" "
                 className="input"
                 value={senha}
                 onChange={(e) => setSenha(e.target.value)}
+                disabled={carregando}
                 required
               />
               <label htmlFor="senha" className="label">
@@ -127,6 +119,7 @@ const CadastroUsuario = () => {
                 className="input"
                 value={telefone}
                 onChange={(e) => setTelefone(e.target.value)}
+                disabled={carregando}
                 required
               />
               <label htmlFor="telefone" className="label">
@@ -138,7 +131,9 @@ const CadastroUsuario = () => {
               <Link href="/home" className="btn2">
                 Voltar
               </Link>
-              <Button type="submit">Salvar</Button>
+              <Button type="submit" disabled={carregando}>
+                {carregando ? "Salvando..." : "Salvar"}
+              </Button>
             </div>
           </form>
         </section>
@@ -146,6 +141,4 @@ const CadastroUsuario = () => {
       <Footer />
     </>
   );
-};
-
-export default CadastroUsuario;
+}

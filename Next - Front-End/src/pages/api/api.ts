@@ -12,11 +12,8 @@ export const api = axios.create({
 
 api.interceptors.request.use((config) => {
   const token = secureLocalStorage.getItem("Token");
-
-  
   if (token) {
     config.headers.Authorization = "Bearer " + token;
-
     try {
       if (typeof token === "string") {
         jwtDecode(token);
@@ -25,6 +22,5 @@ api.interceptors.request.use((config) => {
       console.error("Token inválido ou malformatado", error);
     }
   }
-
   return config;
 });

@@ -1,11 +1,10 @@
 import secureLocalStorage from "react-secure-storage";
 
-export function verificarAutenticacao()
-{
-    const token = secureLocalStorage.getItem("Token");
-    
-    return !!token;
+export function verificarAutenticacao() {
+  const token = secureLocalStorage.getItem("Token");
 
-    //? Token passa a ser booleano. Se existir informação dentro do token, ele retornar TRUE.
-    //? Caso contrário, retorna FALSE.
+  return !!token;
+
+  //? Token passa a ser booleano. Se existir informação dentro do token, ele retornar TRUE.
+  //? Caso contrário, retorna FALSE.
 }

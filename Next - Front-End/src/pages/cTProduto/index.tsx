@@ -1,26 +1,13 @@
+import Link from "next/link";
+import Lucide from "@/utils/lucide";
 import Button from "@/components/button/button";
 import Footer from "@/components/footer/footer";
 import Header from "@/components/header/header";
-import Link from "next/link";
-import Lucide from "@/utils/lucide";
-import { useState } from "react";
-import { erro, notificacao } from "@/utils/toast";
-import { cadastrarTipoProduto } from "../api/genericService";
+import { useTipoProduto } from "../hooks/useTipoProduto";
 
-const CadastroTipoProduto = () => {
-  const [nomeTipo, setNomeTipo] = useState<string>("");
-
-  async function handleCadastro(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    try {
-      await cadastrarTipoProduto({ nomeTipo: nomeTipo } as any);
-
-      notificacao("Tipo de produto cadastrado com sucesso!");
-      setNomeTipo("");
-    } catch (error: any) {
-      erro(error.message || "Erro ao cadastrar tipo de produto.");
-    }
-  }
+export default function CadastroTipoProduto() {
+  const { nomeTipo, setNomeTipo, carregando, handleCadastro } =
+    useTipoProduto();
 
   return (
     <>
@@ -92,6 +79,4 @@ const CadastroTipoProduto = () => {
       <Footer />
     </>
   );
-};
-
-export default CadastroTipoProduto;
+}

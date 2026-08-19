@@ -2,135 +2,60 @@ import Link from "next/link";
 import Lucide from "@/utils/lucide";
 import Button from "../button/button";
 import styles from "./header.module.css";
-import { useRouter } from "next/router";
 import { createPortal } from "react-dom";
-import { useEffect, useState } from "react";
 import { TrocaTema } from "@/utils/trocaTema";
-import { logout, obterUsuarioAutenticado } from "@/pages/api/authService";
+import { useAuthHeader } from "@/pages/hooks/useAuthHeader";
+import { useMenuLateral } from "@/pages/hooks/useMenuLateral";
 
-interface Token {
-  id: string;
-  nome: string;
-  email: string;
-}
+const LINKS_MENU = [
+  { href: "/login", label: "Login", icone: "LogIn" },
+  { href: "/estoque", label: "Estoque", icone: "ShelvingUnit" },
+  { href: "/cTProduto", label: "+ Criar Tipo", icone: "PackagePlus" },
+  { href: "/cCategoria", label: "+ Criar Categoria", icone: "Grid2X2Plus" },
+  { href: "/cLocalizacao", label: "+ Criar Localização", icone: "MapPinPlus" },
+  { href: "/cProduto", label: "+ Cadastrar Produto", icone: "HeartPlus" },
+  { href: "/cUsuario", label: "+ Cadastrar Usuário", icone: "UserRoundPlus" },
+  {
+    href: "/cInstituicao",
+    label: "+ Cadastrar Instituição",
+    icone: "HousePlus",
+  },
+  { href: "/historico", label: "Histórico Geral", icone: "History" },
+  { href: "/home", label: "Tela Inicial", icone: "HouseHeart" },
+] as const;
 
-const Header = () => {
-  const [usuario, setUsuario] = useState<Token | null>(null);
-  const [estaAutenticado, setEstaAutenticado] = useState(false);
-  const [menuAberto, setMenuAberto] = useState(false);
-  const [estaFechando, setEstaFechando] = useState(false);
-
-  const [mounted, setMounted] = useState(false);
-  const router = useRouter();
-
-  useEffect(() => {
-    setMounted(true);
-    const dados = obterUsuarioAutenticado();
-
-    if (dados) {
-      setUsuario(dados);
-      setEstaAutenticado(true);
-    } else {
-      setEstaAutenticado(false);
-      setUsuario(null);
-    }
-  }, []);
-
-  const handleLogout = async () => {
-    await logout();
-    setUsuario(null);
-    setEstaAutenticado(false);
-    router.push("/login");
-  };
-
-  const handleFecharMenu = () => {
-    setEstaFechando(true);
-    setTimeout(() => {
-      setMenuAberto(false);
-      setEstaFechando(false);
-    }, 300);
-  };
+export default function Header() {
+  const { usuario, handleLogout } = useAuthHeader();
+  const { menuAberto, estaFechando, mounted, abrirMenu, fecharMenu } =
+    useMenuLateral();
 
   const menuLateral = (
     <>
       <div
         className={estaFechando ? styles.overlayClosing : styles.overlay}
-        onClick={handleFecharMenu}
+        onClick={fecharMenu}
       />
 
       <aside className={estaFechando ? styles.sidebarClosing : styles.sidebar}>
         <button
           type="button"
           className={styles.closeButton}
-          onClick={handleFecharMenu}
+          onClick={fecharMenu}
         >
           <Lucide name="X" className="reset_lucide" />
         </button>
 
-        <Link
-          href="/login"
-          className={styles.menuLink}
-          onClick={handleFecharMenu}
-        >
-          Login
-          <Lucide name="LogIn" className="reset_lucide" />
-        </Link>
-        <Link
-          href="/cCategoria"
-          className={styles.menuLink}
-          onClick={handleFecharMenu}
-        >
-          + Criar Categoria
-          <Lucide name="Grid2X2Plus" className="reset_lucide" />
-        </Link>
-        <Link
-          href="/cLocalizacao"
-          className={styles.menuLink}
-          onClick={handleFecharMenu}
-        >
-          + Criar Localização
-          <Lucide name="MapPinPlus" className="reset_lucide" />
-        </Link>
-        <Link
-          href="/cTProduto"
-          className={styles.menuLink}
-          onClick={handleFecharMenu}
-        >
-          + Criar Tipo
-          <Lucide name="PackagePlus" className="reset_lucide" />
-        </Link>
-        <Link
-          href="/cProduto"
-          className={styles.menuLink}
-          onClick={handleFecharMenu}
-        >
-          + Cadastrar Produto
-          <Lucide name="HeartPlus" className="reset_lucide" />
-        </Link>
-        <Link
-          href="/cUsuario"
-          className={styles.menuLink}
-          onClick={handleFecharMenu}
-        >
-          + Cadastrar Usuário
-          <Lucide name="UserRoundPlus" className="reset_lucide" />
-        </Link>
-        <Link
-          href="/historico"
-          className={styles.menuLink}
-          onClick={handleFecharMenu}
-        >
-          Histórico Geral
-          <Lucide name="History" className="reset_lucide" />
-        </Link>
-        <Link
-          href="/home"
-          className={styles.menuLink}
-          onClick={handleFecharMenu}
-        >
-          Tela Inicial
-          <Lucide name="HouseHeart" className="reset_lucide" />
-        </Link>
+        {LINKS_MENU.map((item) => (
+          <Link
+            key={item.href}
+            href={item.href}
+            className={styles.menuLink}
+            onClick={fecharMenu}
+          >
+            {item.label}
+            <Lucide name={item.icone} className="reset_lucide" />
+          </Link>
+        ))}
       </aside>
     </>
   );
@@ -172,7 +97,7 @@ const Header = () => {
             <button
               type="button"
               className={`menuIcon ${styles.headerIcon}`}
-              onClick={() => setMenuAberto(true)}
+              onClick={abrirMenu}
             >
               <Lucide name="Menu" />
             </button>
@@ -183,6 +108,4 @@ const Header = () => {
       {mounted && menuAberto && createPortal(menuLateral, document.body)}
     </>
   );
-};
-
-export default Header;
+}

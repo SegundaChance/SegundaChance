@@ -4,12 +4,12 @@ type ButtonProps = ComponentPropsWithoutRef<"button"> & {
   variant?: "default" | "icon";
 };
 
-const Botoes = ({
+export default function Botoes({
   className,
   variant = "default",
   children,
   ...props
-}: ButtonProps) => {
+}: ButtonProps) {
   const combinedClasses =
     `${variant === "default" ? "btn" : ""} ${className || ""}`.trim();
 
@@ -18,6 +18,4 @@ const Botoes = ({
       {children}
     </button>
   );
-};
-
-export default Botoes;
+}

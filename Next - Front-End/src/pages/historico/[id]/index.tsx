@@ -1,107 +1,24 @@
-import DataTable from "@/components/datatable/datatable";
+import Link from "next/link";
 import Footer from "@/components/footer/footer";
 import Header from "@/components/header/header";
-import { useEffect, useState } from "react";
-import { erro } from "@/utils/toast";
-import {
-  listarLogProdutoPorId,
-  listarProdutoPorId,
-  listarLocalizacao,
-} from "@/pages/api/genericService";
-import { useRouter } from "next/router";
-import Link from "next/link";
+import DataTable from "@/components/datatable/datatable";
+import { useLista } from "@/pages/hooks/useLista";
+import { useLogProdutoPorId } from "@/pages/hooks/useLogProdutoPorId";
 
-type HistoricoAlteracao = {
-  logID: number;
-  dataAlteracao: string;
-  nomeAnterior: string;
-  precoAnterior: number;
-  localizacaoAnterior: string;
-};
+export default function HistoricoPorID() {
+  const { id, historico, produtoAtual, carregando } = useLogProdutoPorId();
 
-const HistoricoPorID = () => {
-  const router = useRouter();
-  const { id } = router.query;
-
-  const [historico, setHistorico] = useState<HistoricoAlteracao[]>([]);
-  const [produtoAtual, setProdutoAtual] = useState<any>(null);
-  const [paginaAtual, setPaginaAtual] = useState(1);
-
-  const itensPorPagina = 5;
-  const registros = historico ?? [];
-
-  const indiceInicial = (paginaAtual - 1) * itensPorPagina;
-  const indiceFinal = indiceInicial + itensPorPagina;
-
-  const historicoPaginado = registros.slice(indiceInicial, indiceFinal);
-  const totalPaginas = Math.ceil(registros.length / itensPorPagina);
-  const maxBotoesVisiveis = 5;
-
-  const obterIntervaloPaginas = () => {
-    if (totalPaginas <= maxBotoesVisiveis) {
-      return Array.from({ length: totalPaginas }, (_, i) => i + 1);
-    }
-
-    const metadeJulgada = Math.floor(maxBotoesVisiveis / 2);
-    let inicio = paginaAtual - metadeJulgada;
-    let fim = paginaAtual + metadeJulgada;
-
-    if (inicio < 1) {
-      inicio = 1;
-      fim = maxBotoesVisiveis;
-    }
-
-    if (fim > totalPaginas) {
-      fim = totalPaginas;
-      inicio = totalPaginas - maxBotoesVisiveis + 1;
-    }
-
-    return Array.from({ length: fim - inicio + 1 }, (_, i) => inicio + i);
-  };
-
-  const paginasVisiveis = obterIntervaloPaginas();
-
-  async function listarHistorico() {
-    if (!id) return;
-    try {
-      const [listaLogs, listaLocalizacoes, dadosProduto] = await Promise.all([
-        listarLogProdutoPorId(String(id)),
-        listarLocalizacao(),
-        listarProdutoPorId(String(id)),
-      ]);
-
-      setProdutoAtual(dadosProduto);
-
-      const logsFormatados: HistoricoAlteracao[] = listaLogs.map(
-        (item: any, index: number) => {
-          const localizacao = listaLocalizacoes.find(
-            (loc: any) => loc.localizacaoID === item.localizacaoIDAnterior,
-          );
-
-          return {
-            logID: index,
-            dataAlteracao: item.dataAlteracao,
-            nomeAnterior: item.nomeAnterior,
-            precoAnterior: item.precoAnterior,
-            localizacaoAnterior:
-              localizacao?.nomeLocalizacao ??
-              `ID ${item.localizacaoIDAnterior}`,
-          };
-        },
-      );
-
-      setHistorico(logsFormatados);
-    } catch (error: any) {
-      erro(error.message || "Erro ao carregar os dados do produto.");
-      setHistorico([]);
-    }
-  }
-
-  useEffect(() => {
-    if (router.isReady && id) {
-      listarHistorico();
-    }
-  }, [id, router.isReady]);
+  const {
+    paginaAtual,
+    totalPaginas,
+    itensPaginados,
+    paginasVisiveis,
+    irParaPagina,
+    proximaPagina,
+    paginaAnterior,
+    primeiraPagina,
+    ultimaPagina,
+  } = useLista({ itens: historico, itensPorPagina: 5 });
 
   return (
     <>
@@ -111,10 +28,13 @@ const HistoricoPorID = () => {
           <h1 className="h1">
             Histórico:{" "}
             <span className="h1">
-              {produtoAtual?.nomeProduto || "Carregando..."}
+              {carregando
+                ? "Carregando..."
+                : produtoAtual?.nomeProduto || `Produto #${id}`}
             </span>
           </h1>
-          {historico.length === 0 ? (
+
+          {historico.length === 0 && !carregando ? (
             <p>Esse produto ainda não tem histórico</p>
           ) : (
             <table className="table">
@@ -127,7 +47,7 @@ const HistoricoPorID = () => {
                 </tr>
               </thead>
               <tbody className="line column">
-                {historicoPaginado.map((item) => (
+                {itensPaginados.map((item) => (
                   <DataTable
                     key={item.logID}
                     dataAlteracao={item.dataAlteracao}
@@ -149,7 +69,7 @@ const HistoricoPorID = () => {
                 <ul className="paginacao">
                   <li
                     className="btn small_width"
-                    onClick={() => paginaAtual > 1 && setPaginaAtual(1)}
+                    onClick={primeiraPagina}
                     style={{
                       opacity: paginaAtual === 1 ? 0.25 : 1,
                       cursor: paginaAtual === 1 ? "not-allowed" : "pointer",
@@ -160,9 +80,7 @@ const HistoricoPorID = () => {
 
                   <li
                     className="btn small_width"
-                    onClick={() =>
-                      paginaAtual > 1 && setPaginaAtual(paginaAtual - 1)
-                    }
+                    onClick={paginaAnterior}
                     style={{
                       opacity: paginaAtual === 1 ? 0.5 : 1,
                       cursor: paginaAtual === 1 ? "not-allowed" : "pointer",
@@ -174,7 +92,7 @@ const HistoricoPorID = () => {
                   {paginasVisiveis.map((pagina) => (
                     <li
                       key={pagina}
-                      onClick={() => setPaginaAtual(pagina)}
+                      onClick={() => irParaPagina(pagina)}
                       className={`${paginaAtual === pagina ? "btn" : "btn2"} small_width`}
                     >
                       {pagina}
@@ -183,10 +101,7 @@ const HistoricoPorID = () => {
 
                   <li
                     className="btn small_width"
-                    onClick={() =>
-                      paginaAtual < totalPaginas &&
-                      setPaginaAtual(paginaAtual + 1)
-                    }
+                    onClick={proximaPagina}
                     style={{
                       opacity: paginaAtual === totalPaginas ? 0.5 : 1,
                       cursor:
@@ -200,9 +115,7 @@ const HistoricoPorID = () => {
 
                   <li
                     className="btn small_width"
-                    onClick={() =>
-                      paginaAtual < totalPaginas && setPaginaAtual(totalPaginas)
-                    }
+                    onClick={ultimaPagina}
                     style={{
                       opacity: paginaAtual === totalPaginas ? 0.25 : 1,
                       cursor:
@@ -226,6 +139,4 @@ const HistoricoPorID = () => {
       <Footer />
     </>
   );
-};
-
-export default HistoricoPorID;
+}

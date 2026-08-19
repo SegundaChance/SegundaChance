@@ -2,13 +2,12 @@ import Link from "next/link";
 import styles from "./footer.module.css";
 import { useRouter } from "next/router";
 
-const Footer = () => {
+export default function Footer() {
   const router = useRouter();
 
   return (
     <footer id={styles.footer} className="main_footer">
       <div className="container row">
-        {/* <div> do botão que redireciona para a home */}
         <div>
           <Link href="/home">
             <img
@@ -19,7 +18,6 @@ const Footer = () => {
             />
           </Link>
         </div>
-        {/* <div> do botão que redireciona para a home */}
         <div className="row">
           <Link
             className={styles.social_link}
@@ -45,10 +43,18 @@ const Footer = () => {
               alt="Facebook da ReHope"
             />
           </Link>
+          <Link
+            href="https://www.tucca.org.br/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <img
+              className={styles.img_instituicao}
+              src="/img/Instituicao.png"
+            />
+          </Link>
         </div>
       </div>
     </footer>
   );
-};
-
-export default Footer;
+}

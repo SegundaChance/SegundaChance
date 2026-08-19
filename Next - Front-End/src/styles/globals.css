@@ -118,14 +118,16 @@ li {
   color: var(--branco);
 }
 
-:is(body,
+:is(
+  body,
   *,
   .input,
   .textarea,
   .select,
   .dropdown_options,
   .info,
-  .Toastify__toast) {
+  .Toastify__toast
+) {
   transition:
     background 0.5s ease,
     color 1s ease,
@@ -390,10 +392,10 @@ a {
     transform 0.15s ease;
 }
 
-:is(.input, .textarea):focus~.label,
-:is(.input, .textarea):not(:placeholder-shown)~.label,
-.select:focus~.label,
-.select:valid~.label,
+:is(.input, .textarea):focus ~ .label,
+:is(.input, .textarea):not(:placeholder-shown) ~ .label,
+.select:focus ~ .label,
+.select:valid ~ .label,
 .campo_select:is(.open, .has-value) .label {
   top: 0;
   color: var(--verde-secundario);
@@ -407,7 +409,9 @@ a {
   transform: none;
 }
 
-.campo_form:has(.textarea) .textarea:is(:focus, :not(:placeholder-shown))~.label {
+.campo_form:has(.textarea)
+  .textarea:is(:focus, :not(:placeholder-shown))
+  ~ .label {
   top: 0;
   transform: translateY(-50%);
 }
@@ -456,7 +460,8 @@ a {
   padding: 0;
   cursor: pointer;
   border: 2px dashed var(--verde-primario);
-  box-shadow: inset 0 0 25px color-mix(in srgb, var(--verde-primario), transparent 75%);
+  box-shadow: inset 0 0 25px
+    color-mix(in srgb, var(--verde-primario), transparent 75%);
   overflow: hidden;
   aspect-ratio: 1 / 1;
 }
@@ -805,9 +810,11 @@ a {
 }
 
 .Toastify__progress-bar--success {
-  background: linear-gradient(to right,
-      var(--verde-primario),
-      var(--verde-secundario)) !important;
+  background: linear-gradient(
+    to right,
+    var(--verde-primario),
+    var(--verde-secundario)
+  ) !important;
 }
 
 .Toastify__toast--success .Toastify__toast-icon svg {
@@ -831,9 +838,11 @@ a {
   background: var(--verde-primario);
 }
 
-:is(input, textarea, select):is( :-webkit-autofill,
+:is(input, textarea, select):is(
+  :-webkit-autofill,
   :-webkit-autofill:hover,
-  :-webkit-autofill:focus) {
+  :-webkit-autofill:focus
+) {
   -webkit-text-fill-color: var(--text-main) !important;
   -webkit-box-shadow: inset 0 0 0px 1000px var(--surface);
   transition: background-color 1.5s ease-in-out;

@@ -1,77 +1,37 @@
-import styles from "./login.module.css";
-import { useRouter } from "next/router";
-import { useState, useEffect } from "react";
-import { login, logout, obterUsuarioAutenticado } from "../api/authService";
-import { erro, notificacao } from "@/utils/toast";
-import Lucide from "@/utils/lucide";
-import Button from "@/components/button/button";
-import { TrocaTema } from "@/utils/trocaTema";
 import Link from "next/link";
+import Lucide from "@/utils/lucide";
+import styles from "./login.module.css";
+import Button from "@/components/button/button";
+import { useState } from "react";
+import { useAuth } from "../hooks/useAuth";
+import { TrocaTema } from "@/utils/trocaTema";
+import { useCarrossel } from "../hooks/useCarrossel";
 
-interface Token {
-  nome: string;
-}
+const IMAGENS_BANNER = [
+  "/img/ImagemDoLogin1.png",
+  "/img/ImagemDoLogin2.png",
+  "/img/ImagemDoLogin3.png",
+];
 
-const Login = () => {
-  const [usuario, setUsuario] = useState<Token | null>(null);
-  const [estaAutenticado, setEstaAutenticado] = useState(false);
-  const [email, setEmail] = useState<string>("");
-  const [senha, setSenha] = useState<string>("");
-  const [ativo, setAtivo] = useState<boolean>(false);
+export default function Login() {
+  const [exibirSenha, setExibirSenha] = useState(false);
 
-  const imagens = [
-    "/img/ImagemDoLogin.png",
-    "/img/ImagemDoLogin2.png",
-    "/img/ImagemDoLogin3.png",
-  ];
+  const {
+    usuario,
+    estaAutenticado,
+    email,
+    setEmail,
+    senha,
+    setSenha,
+    autenticar,
+    handleLogout,
+  } = useAuth();
 
-  const [imagemAtual, setImagemAtual] = useState(0);
-
-  const handleLogout = async () => {
-    await logout();
-    setUsuario(null);
-    setEstaAutenticado(false);
-    router.push("/login");
-  };
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setImagemAtual((prev) => (prev + 1) % imagens.length);
-    }, 10000);
-
-    return () => clearInterval(interval);
-  }, []);
-
-  useEffect(() => {
-    const dados = obterUsuarioAutenticado();
-
-    if (dados) {
-      setUsuario(dados);
-      setEstaAutenticado(true);
-    } else {
-      setEstaAutenticado(false);
-      setUsuario(null);
-    }
-  }, []);
-
-  const router = useRouter();
-
-  async function autenticar(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    try {
-      await login(email, senha);
-      notificacao("Login bem sucedido!");
-      router.push("/home");
-    } catch (error: any) {
-      const mensagemErro =
-        error.response?.data || error.message || "Erro ao fazer login";
-      erro(mensagemErro);
-    }
-  }
+  const { imagemAtual } = useCarrossel(IMAGENS_BANNER, 10000);
 
   return (
     <main id={styles.login}>
-      {/* SVG de Background Superior */}
+      {/* SVG Background Superior */}
       <svg
         width="660"
         height="300"
@@ -89,7 +49,7 @@ const Login = () => {
         />
       </svg>
 
-      {/* SVG de Background Inferior */}
+      {/* SVG Background Inferior */}
       <svg
         width="660"
         height="300"
@@ -107,8 +67,9 @@ const Login = () => {
         />
       </svg>
 
+      {/* Carrossel de Imagens */}
       <div className={styles.img_wrapper}>
-        {imagens.map((imagem, index) => (
+        {IMAGENS_BANNER.map((imagem, index) => (
           <img
             key={imagem}
             src={imagem}
@@ -120,6 +81,7 @@ const Login = () => {
         ))}
       </div>
 
+      {/* Formulário de Login */}
       <section id={styles.login_form} className="column">
         <div id={styles.tema_btn}>
           <TrocaTema />
@@ -136,7 +98,7 @@ const Login = () => {
             Login
           </h1>
 
-          {/* Campo de E-mail */}
+          {/* Campo E-mail */}
           <div className="campo_form">
             <Lucide name="Mail" className="lucide" />
             <input
@@ -153,11 +115,11 @@ const Login = () => {
             </label>
           </div>
 
-          {/* Campo de Senha */}
+          {/* Campo Senha */}
           <div className="campo_form">
             <Lucide name="Lock" className="lucide" />
             <input
-              type={ativo ? "text" : "password"}
+              type={exibirSenha ? "text" : "password"}
               id="senha"
               placeholder=" "
               className="input"
@@ -172,10 +134,10 @@ const Login = () => {
             <button
               type="button"
               className="btn_icon"
-              onClick={() => setAtivo(!ativo)}
+              onClick={() => setExibirSenha(!exibirSenha)}
             >
               <Lucide
-                name={ativo ? "EyeOff" : "Eye"}
+                name={exibirSenha ? "EyeOff" : "Eye"}
                 className="reset_lucide"
               />
             </button>
@@ -184,6 +146,8 @@ const Login = () => {
           <Button type="submit" className="btn">
             Entrar
           </Button>
+
+          {/* Mensagem para usuário autenticado */}
           {estaAutenticado && (
             <div className="column" id={styles.voltar}>
               <p className="p">
@@ -204,6 +168,4 @@ const Login = () => {
       </section>
     </main>
   );
-};
-
-export default Login;
+}

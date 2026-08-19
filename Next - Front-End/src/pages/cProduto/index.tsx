@@ -1,25 +1,10 @@
+import Link from "next/link";
+import Lucide from "@/utils/lucide";
 import Button from "@/components/button/button";
 import Footer from "@/components/footer/footer";
 import Header from "@/components/header/header";
-import Lucide from "@/utils/lucide";
-import { ChangeEvent, useEffect, useState, useRef } from "react";
-import Link from "next/link";
-import { erro, notificacao } from "@/utils/toast";
-import {
-  cadastrarProduto,
-  Categoria,
-  editarProduto,
-  listarCategoria,
-  listarLocalizacao,
-  listarProdutoPorId,
-  listarTipoProduto,
-  listarUsuario,
-  Localizacao,
-  ProdutoForm,
-  TipoProduto,
-  Usuario,
-} from "../api/genericService";
-import { useRouter } from "next/router";
+import { useProdutoForm } from "../hooks/useProduto";
+import { useCustomSelect } from "../hooks/useCustomSelect";
 
 const METADADOS_SELECTS = {
   tipo: { label: "Tipo", icone: "Package" as const },
@@ -28,239 +13,33 @@ const METADADOS_SELECTS = {
   usuario: { label: "Usuário", icone: "User" as const },
 };
 
-const CadastroProduto = () => {
-  const router = useRouter();
-  const { id } = router.query;
-  const telaEditar = !!id;
+export default function CadastroProduto() {
+  const {
+    telaEditar,
+    formRef,
+    titulo,
+    setTitulo,
+    preco,
+    setPreco,
+    descricao,
+    setDescricao,
+    tamanho,
+    setTamanho,
+    preview,
+    carregando,
+    listaTipos,
+    listaLocalizacoes,
+    listaUsuarios,
+    categoriasFiltradas,
+    valoresSelect,
+    handleFileChange,
+    handleRemoveImage,
+    handleSelecionarOpcao,
+    salvarProduto,
+    renderizarPreview,
+  } = useProdutoForm();
 
-  const [titulo, setTitulo] = useState("");
-  const [preco, setPreco] = useState("");
-  const [descricao, setDescricao] = useState("");
-  const [tamanho, setTamanho] = useState("");
-
-  const [preview, setPreview] = useState<string | null>(null);
-  const [arquivoImagem, setArquivoImagem] = useState<File | null>(null);
-
-  const [listaTipos, setListaTipos] = useState<TipoProduto[]>([]);
-  const [listaLocalizacoes, setListaLocalizacoes] = useState<Localizacao[]>([]);
-  const [listaUsuarios, setListaUsuarios] = useState<Usuario[]>([]);
-  const [listaCategorias, setListaCategorias] = useState<Categoria[]>([]);
-  const [categoriasFiltradas, setCategoriasFiltradas] = useState<Categoria[]>(
-    [],
-  );
-
-  const [valoresSelect, setValoresSelect] = useState<Record<string, string>>({
-    tipo: "",
-    categoria: "",
-    localizacao: "",
-    usuario: "",
-  });
-
-  const [selectAberto, setSelectAberto] = useState<Record<string, boolean>>({
-    tipo: false,
-    categoria: false,
-    localizacao: false,
-    usuario: false,
-  });
-
-  const formRef = useRef<HTMLFormElement>(null);
-
-  const renderizarPreview = (url: string | null) => {
-    if (!url) return "";
-    if (url.startsWith("blob:")) {
-      return url;
-    }
-    return url.startsWith("data:") ? url : `data:image/jpeg;base64,${url}`;
-  };
-
-  async function carregarInformacoes() {
-    if (!id) return;
-
-    try {
-      const produto = await listarProdutoPorId(id as string);
-
-      setTitulo(produto.nomeProduto || "");
-      setPreco(produto.preco || "");
-      setDescricao(produto.descricao || "");
-      setTamanho(produto.tamanho || (produto as any).Tamanho || "");
-
-      const tipoSeguro =
-        produto.tipoProdutoID ?? (produto as any).tipoProdutoId;
-      const categoriaSegura =
-        produto.categoriaID ?? (produto as any).categoriaId;
-      const localizacaoSegura =
-        produto.localizacaoID ?? (produto as any).localizacaoId;
-      const usuarioSeguro = produto.usuarioID ?? (produto as any).usuarioId;
-
-      setValoresSelect({
-        tipo: tipoSeguro != null ? String(tipoSeguro) : "",
-        categoria: categoriaSegura != null ? String(categoriaSegura) : "",
-        localizacao: localizacaoSegura != null ? String(localizacaoSegura) : "",
-        usuario: usuarioSeguro != null ? String(usuarioSeguro) : "",
-      });
-
-      if (produto.imagem) {
-        setPreview(produto.imagem);
-      } else if (produto.imagemUrl) {
-        setPreview(produto.imagemUrl);
-      }
-    } catch (error) {
-      erro("Erro ao carregar dados do produto");
-    }
-  }
-
-  // Hook unificado para filtrar as categorias baseadas no Tipo selecionado
-  useEffect(() => {
-    if (!valoresSelect.tipo || listaCategorias.length === 0) {
-      setCategoriasFiltradas([]);
-      return;
-    }
-
-    const categorias = listaCategorias.filter(
-      (categoria) => categoria.tipoProdutoID === Number(valoresSelect.tipo),
-    );
-
-    setCategoriasFiltradas(categorias);
-  }, [valoresSelect.tipo, listaCategorias]);
-
-  // Dispara a busca do produto quando o Router está pronto
-  useEffect(() => {
-    if (!router.isReady) return;
-    if (telaEditar && listaCategorias.length > 0) {
-      carregarInformacoes();
-    }
-  }, [router.isReady, id, listaCategorias.length]);
-
-  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setArquivoImagem(file);
-      const imagemUrl = URL.createObjectURL(file);
-      setPreview(imagemUrl);
-    }
-  };
-
-  const handleRemoveImage = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-
-    if (preview && preview.startsWith("blob:")) {
-      URL.revokeObjectURL(preview);
-    }
-    setPreview(null);
-    setArquivoImagem(null);
-  };
-
-  useEffect(() => {
-    return () => {
-      if (preview && preview.startsWith("blob:")) URL.revokeObjectURL(preview);
-    };
-  }, [preview]);
-
-  useEffect(() => {
-    async function carregarCombos() {
-      try {
-        const [tipos, categorias, localizacoes, usuarios] = await Promise.all([
-          listarTipoProduto().catch(() => []),
-          listarCategoria().catch(() => []),
-          listarLocalizacao().catch(() => []),
-          listarUsuario().catch(() => []),
-        ]);
-
-        setListaTipos(Array.isArray(tipos) ? tipos : []);
-        setListaCategorias(Array.isArray(categorias) ? categorias : []);
-        setListaLocalizacoes(Array.isArray(localizacoes) ? localizacoes : []);
-        setListaUsuarios(Array.isArray(usuarios) ? usuarios : []);
-      } catch (err) {
-        console.error("Erro ao carregar dados dos selects:", err);
-      }
-    }
-
-    carregarCombos();
-  }, []);
-
-  useEffect(() => {
-    const fecharAoClicarFora = (event: MouseEvent) => {
-      if (formRef.current && !formRef.current.contains(event.target as Node)) {
-        setSelectAberto({
-          tipo: false,
-          categoria: false,
-          localizacao: false,
-          usuario: false,
-        });
-      }
-    };
-    document.addEventListener("mousedown", fecharAoClicarFora);
-    return () => document.removeEventListener("mousedown", fecharAoClicarFora);
-  }, []);
-
-  async function salvarProduto(e: React.FormEvent) {
-    e.preventDefault();
-
-    if (telaEditar && !id) {
-      erro("ID do produto não encontrado para edição.");
-      return;
-    }
-
-    try {
-      const dados: ProdutoForm = {
-        nomeProduto: titulo,
-        preco: preco,
-        descricao: descricao,
-        tamanho: tamanho,
-        statusProduto: true,
-        categoriaID: Number(valoresSelect.categoria) || 0,
-        localizacaoID: Number(valoresSelect.localizacao) || 0,
-        usuarioID: valoresSelect.usuario,
-        tipoProdutoID: Number(valoresSelect.tipo) || 0,
-        imagem: arquivoImagem,
-      };
-
-      if (
-        !dados.categoriaID ||
-        !dados.localizacaoID ||
-        !dados.usuarioID ||
-        !dados.tipoProdutoID
-      ) {
-        erro("Por favor, selecione todas as opções obrigatórias.");
-        return;
-      }
-
-      if (telaEditar) {
-        await editarProduto(String(id), dados);
-        notificacao("Produto editado com sucesso!");
-      } else {
-        await cadastrarProduto(dados);
-        notificacao("Produto cadastrado com sucesso!");
-      }
-      router.push("/home");
-    } catch (error: any) {
-      erro(error.message || "Erro ao salvar o produto.");
-    }
-  }
-
-  const alternarSelect = (campo: string) => {
-    setSelectAberto((prev) => ({
-      tipo: campo === "tipo" ? !prev.tipo : false,
-      categoria: campo === "categoria" ? !prev.categoria : false,
-      localizacao: campo === "localizacao" ? !prev.localizacao : false,
-      usuario: campo === "usuario" ? !prev.usuario : false,
-    }));
-  };
-
-  const handleSelecionarOpcao = (campo: string, valor: string) => {
-    setValoresSelect((prev) => {
-      const novosValores = { ...prev, [campo]: valor };
-
-      if (campo === "tipo") {
-        novosValores.categoria = "";
-      }
-
-      return novosValores;
-    });
-
-    setSelectAberto((prev) => ({ ...prev, [campo]: false }));
-  };
+  const { selectAberto, alternarSelect } = useCustomSelect(formRef);
 
   const renderSelectCustomizado = (campo: keyof typeof METADADOS_SELECTS) => {
     const config = METADADOS_SELECTS[campo];
@@ -299,6 +78,11 @@ const CadastroProduto = () => {
     );
     const labelExibida = itemSelecionado ? extrairNome(itemSelecionado) : "";
 
+    const aoSelecionar = (valor: string) => {
+      handleSelecionarOpcao(campo, valor);
+      alternarSelect("");
+    };
+
     return (
       <div
         className={`campo_select ${aberto ? "open" : ""} ${valorAtual ? "has-value" : ""}`}
@@ -330,7 +114,7 @@ const CadastroProduto = () => {
 
         {aberto && (
           <ul className="dropdown_options">
-            <li onClick={() => handleSelecionarOpcao(campo, "")}>
+            <li onClick={() => aoSelecionar("")}>
               <Lucide name="RectangleEllipsis" className="reset_lucide" />{" "}
               Nenhum
             </li>
@@ -339,7 +123,7 @@ const CadastroProduto = () => {
               return (
                 <li
                   key={`select-${campo}-${index}`}
-                  onClick={() => handleSelecionarOpcao(campo, idMapeado)}
+                  onClick={() => aoSelecionar(idMapeado)}
                 >
                   {extrairNome(opcao)}
                 </li>
@@ -397,7 +181,6 @@ const CadastroProduto = () => {
               onSubmit={salvarProduto}
               id="form-produto"
             >
-              {/* Coluna 1 - Upload Imagem */}
               <div className="column full_height">
                 <div className="campo_img">
                   <label htmlFor="upload-foto" className="input_upload">
@@ -434,11 +217,11 @@ const CadastroProduto = () => {
                     className="input_img"
                     required={!telaEditar && !preview}
                     onChange={handleFileChange}
+                    disabled={carregando}
                   />
                 </div>
               </div>
 
-              {/* Coluna 2 - Dados de Texto */}
               <div className="column full_height">
                 <div className="campo_form">
                   <Lucide name="ALargeSmall" className="lucide" />
@@ -449,6 +232,7 @@ const CadastroProduto = () => {
                     className="input"
                     value={titulo}
                     onChange={(e) => setTitulo(e.target.value)}
+                    disabled={carregando}
                     required
                   />
                   <label htmlFor="titulo" className="label">
@@ -464,6 +248,7 @@ const CadastroProduto = () => {
                     className="input"
                     value={preco}
                     onChange={(e) => setPreco(e.target.value)}
+                    disabled={carregando}
                     required
                   />
                   <label htmlFor="preco" className="label">
@@ -481,6 +266,7 @@ const CadastroProduto = () => {
                     className="textarea"
                     value={descricao}
                     onChange={(e) => setDescricao(e.target.value)}
+                    disabled={carregando}
                   />
                   <label htmlFor="descricao" className="label">
                     Descrição
@@ -488,7 +274,6 @@ const CadastroProduto = () => {
                 </div>
               </div>
 
-              {/* Coluna 3 - Selects Dinâmicos */}
               <div className="column full_height">
                 {renderSelectCustomizado("tipo")}
                 {renderSelectCustomizado("categoria")}
@@ -504,6 +289,7 @@ const CadastroProduto = () => {
                     className="input"
                     value={tamanho}
                     onChange={(e) => setTamanho(e.target.value)}
+                    disabled={carregando}
                     required
                   />
                   <label htmlFor="tamanho" className="label">
@@ -516,8 +302,8 @@ const CadastroProduto = () => {
               <Link href="/home" className="btn2">
                 Voltar
               </Link>
-              <Button type="submit" form="form-produto">
-                Salvar
+              <Button type="submit" form="form-produto" disabled={carregando}>
+                {carregando ? "Salvando..." : "Salvar"}
               </Button>
             </div>
           </div>
@@ -526,6 +312,4 @@ const CadastroProduto = () => {
       <Footer />
     </>
   );
-};
-
-export default CadastroProduto;
+}

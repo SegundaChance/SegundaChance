@@ -3,60 +3,47 @@ import Lucide from "@/utils/lucide";
 import styles from "./cards.module.css";
 import Button from "@/components/button/button";
 import { formatarPreco } from "@/utils/formatacao";
+import { useCardProduto } from "@/pages/hooks/useCardProduto";
 
 type CardProps = {
-  produtoID: number;
-  nomeProduto: string;
-  preco: string | number;
-  imagem: string | null | any;
+  produtoID?: number;
+  nomeProduto?: string;
+  preco?: string | number;
+  imagem?: string | null | any;
   fantasma?: boolean;
-  onDelete: (produtoId: number) => void;
+  onDelete?: (produtoId: number) => void;
 };
 
-const Card = ({
+export default function Card({
   produtoID,
-  nomeProduto,
-  preco,
+  nomeProduto = "",
+  preco = 0,
   imagem,
   fantasma = false,
-  onDelete,
-}: CardProps) => {
-  const config = {
-    id: !fantasma ? styles.card : undefined,
-    className: fantasma ? styles.cardFantasma : "",
-
-    imagemSrc:
-      imagem && !fantasma
-        ? imagem.startsWith("data:")
-          ? imagem
-          : `data:image/jpeg;base64,${imagem}`
-        : "/img/CardFantasma.png",
-
-    imagemAlt: fantasma ? "Produto fantasma" : nomeProduto,
-    titulo: fantasma ? "Preço" : formatarPreco(Number(preco || 0)),
-    tag: fantasma ? "CircleQuestionMark" : undefined,
-    linkEditar: fantasma ? "/login" : `/cProduto?id=${produtoID}`,
-    onExcluir: fantasma ? undefined : () => onDelete(produtoID),
-  };
+  onDelete = () => {},
+}: CardProps) {
+  const { imagemSrc, imagemAlt, linkEditar, handleExcluir } = useCardProduto({
+    produtoID,
+    nomeProduto,
+    preco,
+    imagem,
+    fantasma,
+    onDelete,
+  });
 
   return (
     <article className="column">
-      <li id={config.id} className={config.className}>
+      <li
+        id={!fantasma ? styles.card : undefined}
+        className={fantasma ? styles.cardFantasma : ""}
+      >
         <div className={`${styles.imagemContainer} fit_content`}>
-          {!fantasma ? (
+          {!fantasma && produtoID !== undefined ? (
             <Link href={`/detalhe/${produtoID}`}>
-              <img
-                className={styles.img}
-                src={config.imagemSrc}
-                alt={config.imagemAlt}
-              />
+              <img className={styles.img} src={imagemSrc} alt={imagemAlt} />
             </Link>
           ) : (
-            <img
-              className={styles.img}
-              src={config.imagemSrc}
-              alt={config.imagemAlt}
-            />
+            <img className={styles.img} src={imagemSrc} alt={imagemAlt} />
           )}
 
           <h3 className={`${styles.tituloProduto} title dark`}>
@@ -72,7 +59,9 @@ const Card = ({
           </h3>
         </div>
 
-        <span className={styles.preco}>{config.titulo}</span>
+        <span className={styles.preco}>
+          {fantasma ? "Preço" : formatarPreco(Number(preco || 0))}
+        </span>
 
         <div
           className={`row no_gap to_column2 ${styles.botoes}`}
@@ -80,7 +69,7 @@ const Card = ({
         >
           <Button
             className={`${styles.btn_card} ${styles.excluir}`}
-            onClick={config.onExcluir}
+            onClick={handleExcluir}
             disabled={fantasma}
           >
             <Lucide name="Delete" className="reset_lucide icon_branco" />
@@ -88,7 +77,7 @@ const Card = ({
           </Button>
 
           <Link
-            href={config.linkEditar}
+            href={linkEditar}
             className={`btn ${styles.btn_card} ${styles.editar}`}
           >
             <Lucide name="SquarePen" className="reset_lucide icon_branco" />
@@ -98,6 +87,4 @@ const Card = ({
       </li>
     </article>
   );
-};
-
-export default Card;
+}

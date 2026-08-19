@@ -4,8 +4,9 @@
 #header {
   min-height: 10vh;
   background: var(--verde-primario);
-  clip-path: path("M0 107.666C0 107.666 292.723 126.566 480 117.574C573.935 113.063 625.977 99.6848 720 97.7588C813.786 95.8377 865.949 107.666 960 107.666C1054.05 107.666 1106.21 95.8377 1200 97.7588C1294.02 99.6848 1346.06 113.063 1440 117.574C1627.28 126.566 1920 107.666 1920 107.666V-6.67572e-06H0V107.666Z"
-    );
+  clip-path: path(
+    "M0 107.666C0 107.666 292.723 126.566 480 117.574C573.935 113.063 625.977 99.6848 720 97.7588C813.786 95.8377 865.949 107.666 960 107.666C1054.05 107.666 1106.21 95.8377 1200 97.7588C1294.02 99.6848 1346.06 113.063 1440 117.574C1627.28 126.566 1920 107.666 1920 107.666V-6.67572e-06H0V107.666Z"
+  );
 }
 
 #header::after {
@@ -38,9 +39,11 @@
   height: 60px;
   padding: var(--padding-sm);
   color: var(--branco);
-  background: color-mix(in srgb,
-      var(--verde-primario),
-      var(--verde-secundario));
+  background: color-mix(
+    in srgb,
+    var(--verde-primario),
+    var(--verde-secundario)
+  );
   border: 1px solid var(--destaque);
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-sm);
@@ -88,7 +91,7 @@
   gap: 0.5rem;
   width: 320px;
   height: 100vh;
-  padding: 5rem 2rem 2rem 2rem;
+  padding: 5rem 1rem 2rem 0;
   background: var(--verde-primario);
   box-shadow: -4px 0 10px rgba(0, 0, 0, 0.2);
   animation: slideInSidebar 0.35s ease forwards;
@@ -225,9 +228,11 @@
     top: 0;
     z-index: 1000;
     width: 100%;
-    background: linear-gradient(to bottom,
-        color-mix(in srgb, var(--bg), var(--destaque) 75%),
-        transparent);
+    background: linear-gradient(
+      to bottom,
+      color-mix(in srgb, var(--bg), var(--destaque) 75%),
+      transparent
+    );
     clip-path: none;
   }
 
@@ -242,9 +247,11 @@
     top: 0;
     z-index: 1000;
     width: 100%;
-    background: linear-gradient(to bottom,
-        color-mix(in srgb, var(--bg), var(--destaque) 75%),
-        transparent);
+    background: linear-gradient(
+      to bottom,
+      color-mix(in srgb, var(--bg), var(--destaque) 75%),
+      transparent
+    );
     clip-path: none;
   }
 

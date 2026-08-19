@@ -7,12 +7,12 @@ type Dados = {
   nomeLocalizacaoAnterior: string;
 };
 
-const DataTable = ({
+export default function DataTable({
   dataAlteracao,
   nomeAnterior,
   precoAnterior,
   nomeLocalizacaoAnterior,
-}: Dados) => {
+}: Dados) {
   return (
     <tr className="tr info">
       <td>{dataAlteracao}</td>
@@ -21,6 +21,4 @@ const DataTable = ({
       <td>{nomeLocalizacaoAnterior}</td>
     </tr>
   );
-};
-
-export default DataTable;
+}
