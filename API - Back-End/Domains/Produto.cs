@@ -17,8 +17,6 @@ public partial class Produto
 
     public string? Tamanho { get; set; }
 
-    public byte[]? Imagem { get; set; }
-
     public bool StatusProduto { get; set; }
 
     public int CategoriaID { get; set; }
@@ -26,6 +24,8 @@ public partial class Produto
     public int LocalizacaoID { get; set; }
 
     public Guid UsuarioID { get; set; }
+
+    public byte[]? Imagem { get; set; }
 
     public virtual Categoria Categoria { get; set; } = null!;
 

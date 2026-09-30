@@ -50,7 +50,7 @@ namespace ReHope.Applications.Services
             // var token = _tokenJwt.GerarToken(usuario);
             var token = _tokenJwt.GerarToken(usuario);
 
-            TokenDto novoToken = new TokenDto { Token = token  };
+            TokenDto novoToken = new TokenDto { Token = token };
 
             return novoToken;
         }

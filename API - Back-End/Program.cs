@@ -18,7 +18,7 @@ var builder = WebApplication.CreateBuilder(args);
 Env.Load();
 
 // pegando a connection string 
-string connectionString = Environment.GetEnvironmentVariable("CONNECTION_STRING")!;
+string connectionString = Environment.GetEnvironmentVariable("CONNECTION_STRING");
 
 // conexao com o banco 
 builder.Services.AddDbContext<ReHopeContext>(options => options.UseSqlServer(connectionString));
@@ -162,9 +162,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
 
 app.UseCors("CorsPolicy");
+app.UseHttpsRedirection();
 
 app.UseAuthentication();
 

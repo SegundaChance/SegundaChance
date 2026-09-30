@@ -5,18 +5,20 @@ using ReHope.Domains;
 
 namespace ReHope.Contexts;
 
-public partial class ReHopeContext : DbContext
+public partial class SegundaChanceContext : DbContext
 {
-    public ReHopeContext()
+    public SegundaChanceContext()
     {
     }
 
-    public ReHopeContext(DbContextOptions<ReHopeContext> options)
+    public SegundaChanceContext(DbContextOptions<SegundaChanceContext> options)
         : base(options)
     {
     }
 
     public virtual DbSet<Categoria> Categoria { get; set; }
+
+    public virtual DbSet<Instituicao> Instituicao { get; set; }
 
     public virtual DbSet<Localizacao> Localizacao { get; set; }
 
@@ -29,18 +31,18 @@ public partial class ReHopeContext : DbContext
     public virtual DbSet<Usuario> Usuario { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    //{
-    //}
-
-        => optionsBuilder.UseSqlServer("Server=(localdb)\\MSSQLLocalDB;Database=SegundaChance;Trusted_Connection=True;TrustServerCertificate=True");
+    { 
+    //=> optionsBuilder.UseSqlServer("Server=(localdb)\\MSSQLLocalDB;Database=SegundaChance;Trusted_Connection=True;TrustServerCertificate=True;");
+    
+    }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Categoria>(entity =>
         {
-            entity.HasKey(e => e.CategoriaID).HasName("PK__Categori__F353C1C5DD3E22CF");
+            entity.HasKey(e => e.CategoriaID).HasName("PK__Categori__F353C1C519739161");
 
-            entity.HasIndex(e => e.NomeCategoria, "UQ__Categori__98459A0B26730E78").IsUnique();
+            entity.HasIndex(e => e.NomeCategoria, "UQ__Categori__98459A0B1CDEB0E8").IsUnique();
 
             entity.Property(e => e.NomeCategoria)
                 .HasMaxLength(100)
@@ -52,11 +54,21 @@ public partial class ReHopeContext : DbContext
                 .HasConstraintName("FK_Categoria_TipoProduto");
         });
 
+        modelBuilder.Entity<Instituicao>(entity =>
+        {
+            entity.HasKey(e => e.InstituicaoID).HasName("PK__Institui__5FC566D0E8D53A9E");
+
+            entity.Property(e => e.Missao).IsUnicode(false);
+            entity.Property(e => e.NomeInstituicao)
+                .HasMaxLength(100)
+                .IsUnicode(false);
+        });
+
         modelBuilder.Entity<Localizacao>(entity =>
         {
-            entity.HasKey(e => e.LocalizacaoID).HasName("PK__Localiza__83ABDECA867D5636");
+            entity.HasKey(e => e.LocalizacaoID).HasName("PK__Localiza__83ABDECAFA82414E");
 
-            entity.HasIndex(e => e.NomeLocalizacao, "UQ__Localiza__76AA639AD463D947").IsUnique();
+            entity.HasIndex(e => e.NomeLocalizacao, "UQ__Localiza__76AA639A437A6B27").IsUnique();
 
             entity.Property(e => e.NomeLocalizacao)
                 .HasMaxLength(100)
@@ -65,7 +77,7 @@ public partial class ReHopeContext : DbContext
 
         modelBuilder.Entity<LogProduto>(entity =>
         {
-            entity.HasKey(e => e.LogProdutoID).HasName("PK__LogProdu__C4788A9B1C8DD276");
+            entity.HasKey(e => e.LogProdutoID).HasName("PK__LogProdu__C4788A9B863C7024");
 
             entity.Property(e => e.LogProdutoID).HasDefaultValueSql("(newid())");
             entity.Property(e => e.DataAlteracao).HasPrecision(0);
@@ -98,7 +110,7 @@ public partial class ReHopeContext : DbContext
 
         modelBuilder.Entity<Produto>(entity =>
         {
-            entity.HasKey(e => e.ProdutoID).HasName("PK__Produto__9C8800C3AFCF733A");
+            entity.HasKey(e => e.ProdutoID).HasName("PK__Produto__9C8800C3EB326883");
 
             entity.ToTable(tb =>
                 {
@@ -106,11 +118,10 @@ public partial class ReHopeContext : DbContext
                     tb.HasTrigger("trg_InativarProduto");
                 });
 
-            entity.HasIndex(e => e.Codigo, "UQ__Produto__06370DACE9C97253").IsUnique();
+            entity.HasIndex(e => e.Codigo, "UQ__Produto__06370DAC5DD0E397").IsUnique();
 
             entity.Property(e => e.ProdutoID).HasDefaultValueSql("(newid())");
             entity.Property(e => e.Codigo).ValueGeneratedOnAdd();
-            entity.Property(e => e.Imagem).HasColumnType("varbinary(max)");
             entity.Property(e => e.NomeProduto).HasMaxLength(100);
             entity.Property(e => e.Preco).HasColumnType("decimal(10, 2)");
             entity.Property(e => e.StatusProduto).HasDefaultValue(true);
@@ -136,9 +147,9 @@ public partial class ReHopeContext : DbContext
 
         modelBuilder.Entity<TipoProduto>(entity =>
         {
-            entity.HasKey(e => e.TipoProdutoID).HasName("PK__TipoProd__99B538EB1B2741FE");
+            entity.HasKey(e => e.TipoProdutoID).HasName("PK__TipoProd__99B538EBC98FB7DA");
 
-            entity.HasIndex(e => e.NomeTipo, "UQ__TipoProd__7859A10A070D5393").IsUnique();
+            entity.HasIndex(e => e.NomeTipo, "UQ__TipoProd__7859A10A1A13AD1E").IsUnique();
 
             entity.Property(e => e.NomeTipo)
                 .HasMaxLength(100)
@@ -147,13 +158,13 @@ public partial class ReHopeContext : DbContext
 
         modelBuilder.Entity<Usuario>(entity =>
         {
-            entity.HasKey(e => e.UsuarioID).HasName("PK__Usuario__2B3DE798C626C163");
+            entity.HasKey(e => e.UsuarioID).HasName("PK__Usuario__2B3DE798909CA0B3");
 
             entity.ToTable(tb => tb.HasTrigger("trg_ExclusaoUsuario"));
 
-            entity.HasIndex(e => e.Telefone, "UQ__Usuario__4EC504B6372D30AB").IsUnique();
+            entity.HasIndex(e => e.Telefone, "UQ__Usuario__4EC504B65A86C5C3").IsUnique();
 
-            entity.HasIndex(e => e.Email, "UQ__Usuario__A9D10534F4276365").IsUnique();
+            entity.HasIndex(e => e.Email, "UQ__Usuario__A9D105342317C405").IsUnique();
 
             entity.Property(e => e.UsuarioID).HasDefaultValueSql("(newid())");
             entity.Property(e => e.Email).HasMaxLength(200);
