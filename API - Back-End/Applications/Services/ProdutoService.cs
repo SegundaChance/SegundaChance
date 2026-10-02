@@ -12,12 +12,14 @@ namespace ReHope.Applications.Services
         private readonly IProdutoRepository _repository;
         private readonly IContentSafetyRepository _contentSafety;
         private readonly IImageDescriptionRepository _imageDescription;
+        private readonly UploadImagemService _uploadImagemService;
 
-        public ProdutoService(IProdutoRepository repository, IContentSafetyRepository contentSafety, IImageDescriptionRepository imageDescription)
+        public ProdutoService(IProdutoRepository repository, IContentSafetyRepository contentSafety, IImageDescriptionRepository imageDescription, UploadImagemService uploadImagemService)
         {
             _repository = repository;
             _contentSafety = contentSafety;
             _imageDescription = imageDescription;
+            _uploadImagemService = uploadImagemService;
         }
 
         private async Task ValidarConteudoProdutoAsync(string nome, string descricao)
@@ -123,18 +125,20 @@ namespace ReHope.Applications.Services
         {
             ValidarCadastro(produtoDto);
 
-            //string descricao = await GerarDescricaoProdutoAsync(produtoDto);
-
-            //await ValidarConteudoProdutoAsync(produtoDto.NomeProduto, descricao);
+            // Realiza o upload no Cloudinary se a imagem for informada
+            string? imagemUrl = null;
+            if (produtoDto.Imagem != null && produtoDto.Imagem.Length > 0)
+            {
+                imagemUrl = await _uploadImagemService.UploadImagemAsync(produtoDto.Imagem);
+            }
 
             Produto produto = new Produto
             {
                 NomeProduto = produtoDto.NomeProduto,
                 Preco = produtoDto.Preco,
-                //Descricao = descricao,
                 Descricao = produtoDto.Descricao,
                 Tamanho = produtoDto.Tamanho,
-                Imagem = ConverterImagemParaBytes.ConverterImagem(produtoDto.Imagem),
+                Imagem = imagemUrl, // Recebe a URL gerada pelo Cloudinary
                 StatusProduto = true,
                 UsuarioID = usuarioId,
                 CategoriaID = produtoDto.CategoriaID,
@@ -146,7 +150,7 @@ namespace ReHope.Applications.Services
             return ConverterProdutoParaDto.ConverterParaDto(produto);
         }
 
-        public LerProdutoDto Atualizar(Guid id, AtualizarProdutoDto produtoDto)
+        public async Task<LerProdutoDto> Atualizar(Guid id, AtualizarProdutoDto produtoDto)
         {
             Produto produtoBanco = _repository.ObterPorId(id);
 
@@ -191,10 +195,13 @@ namespace ReHope.Applications.Services
             produtoBanco.Preco = produtoDto.Preco;
             produtoBanco.Descricao = produtoDto.Descricao;
             produtoBanco.CategoriaID = produtoDto.CategoriaID;
+            produtoBanco.LocalizacaoID = produtoDto.LocalizacaoID;
+            produtoBanco.Tamanho = produtoDto.Tamanho;
 
+            // Se enviou uma nova imagem, faz o upload no Cloudinary e atualiza a URL
             if (produtoDto.Imagem != null && produtoDto.Imagem.Length > 0)
             {
-                produtoBanco.Imagem = ConverterImagemParaBytes.ConverterImagem(produtoDto.Imagem);
+                produtoBanco.Imagem = await _uploadImagemService.UploadImagemAsync(produtoDto.Imagem);
             }
 
             if (produtoDto.StatusProduto != null)

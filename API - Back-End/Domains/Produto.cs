@@ -25,7 +25,7 @@ public partial class Produto
 
     public Guid UsuarioID { get; set; }
 
-    public byte[]? Imagem { get; set; }
+    public string? Imagem { get; set; } // Alterado de byte[]? para string?
 
     public virtual Categoria Categoria { get; set; } = null!;
 

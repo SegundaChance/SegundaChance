@@ -95,11 +95,11 @@ namespace ReHope.Controllers
         [Authorize]
         [HttpPut("{id}")]
         [Consumes("multipart/form-data")]
-        public ActionResult Atualizar(Guid id, [FromForm] AtualizarProdutoDto produtoDto)
+        public async Task<ActionResult> Atualizar(Guid id, [FromForm] AtualizarProdutoDto produtoDto)
         {
             try
             {
-                _service.Atualizar(id, produtoDto);
+                await _service.Atualizar(id, produtoDto);
                 return NoContent();
             }
             catch (DomainException ex)

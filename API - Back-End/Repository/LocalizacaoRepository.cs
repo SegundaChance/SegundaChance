@@ -6,9 +6,9 @@ namespace ReHope.Repository
 {
     public class LocalizacaoRepository : ILocalizacaoRepository
     {
-        private readonly ReHopeContext _context;
+        private readonly SegundaChanceContext _context;
 
-        public LocalizacaoRepository(ReHopeContext context)
+        public LocalizacaoRepository(SegundaChanceContext context)
         {
             _context = context;
         }

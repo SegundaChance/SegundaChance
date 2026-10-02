@@ -6,9 +6,9 @@ namespace ReHope.Repository
 {
     public class UsuarioRepository : IUsuarioRepository
     {
-        private readonly ReHopeContext _context;
+        private readonly SegundaChanceContext _context;
 
-        public UsuarioRepository(ReHopeContext context)
+        public UsuarioRepository(SegundaChanceContext context)
         {
             _context = context;
         }

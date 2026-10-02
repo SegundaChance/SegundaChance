@@ -9,9 +9,9 @@ namespace ReHope.Repository
 {
     public class CategoriaRepository : ICategoriaRepository
     {
-        private readonly ReHopeContext _context;
+        private readonly SegundaChanceContext _context;
 
-        public CategoriaRepository(ReHopeContext context)
+        public CategoriaRepository(SegundaChanceContext context)
         {
             _context = context;
         }

@@ -7,9 +7,9 @@ namespace ReHope.Repository
 {
     public class ProdutoRepository : IProdutoRepository
     {
-        private readonly ReHopeContext _context;
+        private readonly SegundaChanceContext _context;
 
-        public ProdutoRepository(ReHopeContext context)
+        public ProdutoRepository(SegundaChanceContext context)
         {
             _context = context;
         }

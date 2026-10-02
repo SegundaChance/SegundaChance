@@ -7,8 +7,8 @@ namespace ReHope.Repository
 {
     public class LogProdutoRepository : ILogProdutoRepository
     {
-        private readonly ReHopeContext _context;
-        public LogProdutoRepository(ReHopeContext context)
+        private readonly SegundaChanceContext _context;
+        public LogProdutoRepository(SegundaChanceContext context)
         {
             _context = context;
         }

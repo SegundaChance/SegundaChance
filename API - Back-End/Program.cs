@@ -21,7 +21,7 @@ Env.Load();
 string connectionString = Environment.GetEnvironmentVariable("CONNECTION_STRING");
 
 // conexao com o banco 
-builder.Services.AddDbContext<ReHopeContext>(options => options.UseSqlServer(connectionString));
+builder.Services.AddDbContext<SegundaChanceContext>(options => options.UseSqlServer(connectionString));
 
 // Add services to the container.
 
@@ -59,6 +59,7 @@ builder.Services.AddSwaggerGen(c =>
 // Produto
 builder.Services.AddScoped<IProdutoRepository, ProdutoRepository>();
 builder.Services.AddScoped<ProdutoService>();
+builder.Services.AddScoped<UploadImagemService>();
 
 // IA de moderação
 builder.Services.AddScoped<IContentSafetyRepository, ContentSafetyService>();
