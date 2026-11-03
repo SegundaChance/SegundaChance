@@ -21,7 +21,8 @@ Env.Load();
 string connectionString = Environment.GetEnvironmentVariable("CONNECTION_STRING");
 
 // conexao com o banco 
-builder.Services.AddDbContext<SegundaChanceContext>(options => options.UseSqlServer(connectionString));
+builder.Services.AddDbContext<SegundaChanceContext>(options =>
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // Add services to the container.
 

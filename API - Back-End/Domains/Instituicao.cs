@@ -13,5 +13,5 @@ public partial class Instituicao
 
     public string Missao { get; set; } = null!;
 
-    public byte[] LogoInstituicao { get; set; } = null!;
+    public string? LogoInstituicao { get; set; } = null!;
 }

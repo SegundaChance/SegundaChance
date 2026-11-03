@@ -79,7 +79,7 @@ public partial class SegundaChanceContext : DbContext
         {
             entity.HasKey(e => e.LogProdutoID).HasName("PK__LogProdu__C4788A9B863C7024");
 
-            entity.Property(e => e.LogProdutoID).HasDefaultValueSql("(newid())");
+            entity.Property(e => e.LogProdutoID).HasDefaultValueSql("gen_random_uuid()");
             entity.Property(e => e.DataAlteracao).HasPrecision(0);
             entity.Property(e => e.NomeAnterior)
                 .HasMaxLength(100)
@@ -120,7 +120,7 @@ public partial class SegundaChanceContext : DbContext
 
             entity.HasIndex(e => e.Codigo, "UQ__Produto__06370DAC5DD0E397").IsUnique();
 
-            entity.Property(e => e.ProdutoID).HasDefaultValueSql("(newid())");
+            entity.Property(e => e.ProdutoID).HasDefaultValueSql("gen_random_uuid()");
             entity.Property(e => e.Codigo).ValueGeneratedOnAdd();
             entity.Property(e => e.NomeProduto).HasMaxLength(100);
             entity.Property(e => e.Preco).HasColumnType("decimal(10, 2)");
@@ -166,7 +166,7 @@ public partial class SegundaChanceContext : DbContext
 
             entity.HasIndex(e => e.Email, "UQ__Usuario__A9D105342317C405").IsUnique();
 
-            entity.Property(e => e.UsuarioID).HasDefaultValueSql("(newid())");
+            entity.Property(e => e.UsuarioID).HasDefaultValueSql("gen_random_uuid()");
             entity.Property(e => e.Email).HasMaxLength(200);
             entity.Property(e => e.Nome).HasMaxLength(100);
             entity.Property(e => e.Senha).HasMaxLength(32);
