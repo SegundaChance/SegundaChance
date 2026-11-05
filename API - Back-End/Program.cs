@@ -18,11 +18,13 @@ var builder = WebApplication.CreateBuilder(args);
 Env.Load();
 
 // pegando a connection string 
-string connectionString = Environment.GetEnvironmentVariable("CONNECTION_STRING");
-
+string connectionString = Environment.GetEnvironmentVariable("conexaoDB");
+string jwtKey = Environment.GetEnvironmentVariable("JWT_KEY");
+string jwtIssuer = Environment.GetEnvironmentVariable("JWT_ISSUER");
+string jwtAudience = Environment.GetEnvironmentVariable("JWT_AUDIENCE");
 // conexao com o banco 
 builder.Services.AddDbContext<SegundaChanceContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseNpgsql(connectionString));
 
 // Add services to the container.
 
@@ -101,14 +103,14 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     {
         // Lê a chave secreta definida no appsettings.json.
 
-        var chave = Environment.GetEnvironmentVariable("JWT_KEY");
+        var chave = jwtKey;
         //var chave = builder.Configuration["Jwt:Key"]!;
 
         // Quem emitiu o token.
-        var issuer = builder.Configuration["Jwt:Issuer"]!;
+        var issuer = jwtIssuer;
 
         // Para quem o token foi criado.
-        var audience = builder.Configuration["Jwt:Audience"]!;
+        var audience = jwtAudience;
 
         options.TokenValidationParameters = new TokenValidationParameters
         {

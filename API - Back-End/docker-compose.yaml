@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "5000:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - conexaoBanco=Host=aws-0-us-east-2.pooler.supabase.com;Port=5432;Database=postgres;Username=postgres.eyvouksgmxialfvxysnn;Password=@R&H0p3@ @R&H0p3@;SSL Mode=Require;Trust Server Certificate=true;
+      - JWT_SECRET=senha_super_secreta_com_32_caracteres
+      - JWT_ISSUER=ReHopeApi
+      - JWT_AUDIENCE=ReHopeFront
