@@ -1,30 +1,21 @@
 import axios from "axios";
 import secureLocalStorage from "react-secure-storage";
-import { jwtDecode } from "jwt-decode";
 
-const apiLocal = "https://localhost:7299/api/";
-
-const apiRemota = "";
+// Lê a URL pública da Vercel ou usa a localhost em desenvolvimento
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "https://localhost:7299/api/";
 
 export const api = axios.create({
-  baseURL: apiLocal,
+  baseURL: API_URL,
 });
 
 api.interceptors.request.use((config) => {
   const token = secureLocalStorage.getItem("Token");
 
-  
-  if (token) {
-    config.headers.Authorization = "Bearer " + token;
-
-    try {
-      if (typeof token === "string") {
-        jwtDecode(token);
-      }
-    } catch (error) {
-      console.error("Token inválido ou malformatado", error);
-    }
+  if (token && typeof token === "string") {
+    config.headers.Authorization = `Bearer ${token}`;
   }
 
   return config;
+}, (error) => {
+  return Promise.reject(error);
 });
