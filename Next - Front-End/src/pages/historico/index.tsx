@@ -2,7 +2,7 @@ import DataTable from "@/components/datatable/datatable";
 import Footer from "@/components/footer/footer";
 import Header from "@/components/header/header";
 import { useEffect, useState } from "react";
-import { listarLogProduto, listarLocalizacao } from "../api/genericService";
+import { listarLogProduto, listarLocalizacao } from "@/services/genericService";
 import { erro } from "@/utils/toast";
 import Link from "next/link";
 

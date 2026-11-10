@@ -18,7 +18,7 @@ import {
   ProdutoForm,
   TipoProduto,
   Usuario,
-} from "../api/genericService";
+} from "@/services/genericService";
 import { useRouter } from "next/router";
 
 const METADADOS_SELECTS = {

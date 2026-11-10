@@ -9,7 +9,7 @@ import {
   cadastrarCategoria,
   listarTipoProduto,
   TipoProduto,
-} from "../api/genericService";
+} from "@/services/genericService";
 
 const CadastroCategoria = () => {
   const [categoria, setCategoria] = useState("");

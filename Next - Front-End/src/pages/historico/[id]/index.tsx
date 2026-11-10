@@ -7,7 +7,7 @@ import {
   listarLogProdutoPorId,
   listarProdutoPorId,
   listarLocalizacao,
-} from "@/pages/api/genericService";
+} from "@/services/genericService";
 import { useRouter } from "next/router";
 import Link from "next/link";
 

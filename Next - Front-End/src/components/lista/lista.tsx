@@ -4,7 +4,7 @@ import Card from "@/components/cards/cards";
 import { useEffect, useState, useRef } from "react";
 import { desformatarPreco } from "@/utils/formatacao";
 import { erro, notificacao, toastConfirmarExcluir } from "@/utils/toast";
-import { deletarProduto, listarProduto } from "@/pages/api/genericService";
+import { deletarProduto, listarProduto } from "@/services/genericService";
 
 interface Produto {
   produtoID: number;

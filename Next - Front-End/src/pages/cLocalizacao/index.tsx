@@ -5,7 +5,7 @@ import Link from "next/link";
 import Lucide from "@/utils/lucide";
 import { useState } from "react";
 import { erro, notificacao } from "@/utils/toast";
-import { cadastrarLocalizacao } from "../api/genericService";
+import { cadastrarLocalizacao } from "@/services/genericService";
 
 const CadastroLocalizacao = () => {
   const [localizacao, setLocalizacao] = useState<string>("");

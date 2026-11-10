@@ -5,7 +5,7 @@ import Header from "@/components/header/header";
 import Link from "next/link";
 import Lucide from "@/utils/lucide";
 import { erro, notificacao } from "@/utils/toast";
-import { cadastrarUsuario } from "../api/genericService";
+import { cadastrarUsuario } from "@/services/genericService";
 
 const CadastroUsuario = () => {
   const [nome, setNome] = useState<string>("");

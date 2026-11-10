@@ -1,7 +1,7 @@
 import styles from "./login.module.css";
 import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
-import { login, logout, obterUsuarioAutenticado } from "../api/authService";
+import { login, logout, obterUsuarioAutenticado } from "@/services/authService";
 import { erro, notificacao } from "@/utils/toast";
 import Lucide from "@/utils/lucide";
 import Button from "@/components/button/button";

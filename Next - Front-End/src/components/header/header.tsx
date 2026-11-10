@@ -6,7 +6,7 @@ import { useRouter } from "next/router";
 import { createPortal } from "react-dom";
 import { useEffect, useState } from "react";
 import { TrocaTema } from "@/utils/trocaTema";
-import { logout, obterUsuarioAutenticado } from "@/pages/api/authService";
+import { logout, obterUsuarioAutenticado } from "@/services/authService";
 
 interface Token {
   id: string;

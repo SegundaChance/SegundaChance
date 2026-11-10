@@ -5,7 +5,7 @@ import Link from "next/link";
 import Lucide from "@/utils/lucide";
 import { useState } from "react";
 import { erro, notificacao } from "@/utils/toast";
-import { cadastrarTipoProduto } from "../api/genericService";
+import { cadastrarTipoProduto } from "@/services/genericService";
 
 const CadastroTipoProduto = () => {
   const [nomeTipo, setNomeTipo] = useState<string>("");
